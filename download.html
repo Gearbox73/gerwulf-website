@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -89,11 +89,6 @@
             transform: translateY(-3px);
             box-shadow: 0 8px 30px rgba(214, 113, 5, 0.6);
             background: linear-gradient(135deg, #ff8c1a 0%, #d67105 100%);
-        }
-
-        .download-btn::before {
-            content: "ðŸ“¥ ";
-            font-size: 1.2em;
         }
 
         .file-info {
@@ -267,32 +262,28 @@
         footer a:hover {
             text-decoration: underline;
         }
-
-        .emoji {
-            font-size: 1.3em;
-        }
     </style>
 </head>
 <body>
     <div class="header">
         <h1>Spatial Separation Calculator</h1>
-        <p>Fire Protection & Building Code Analysis</p>
+        <p>Fire Protection and Building Code Analysis</p>
     </div>
 
     <div class="container">
         <div style="text-align: center;">
-            <span class="trial-badge">ðŸŽ TRIAL VERSION - May 1-June 1, 2026</span>
+            <span class="trial-badge">TRIAL VERSION - May 1-June 1, 2026</span>
         </div>
 
         <div class="download-section">
             <h2>Download Trial Installer</h2>
             <p style="font-size: 1.1em; margin-bottom: 30px;">One simple download - automatic installation</p>
             <a href="downloads/GerwulfCalculator-v1.0.1-Trial.zip" class="download-btn">Download Now</a>
-            <p class="file-info">Version 1.0.1 â€¢ Windows 10/11 â€¢ ~47 MB</p>
+            <p class="file-info">Version 1.0.1 &bull; Windows 10/11 &bull; ~47 MB</p>
         </div>
 
         <div class="highlight-box">
-            <h4><span class="emoji">âœ¨</span> Super Simple Installation!</h4>
+            <h4>Super Simple Installation!</h4>
             <p>Just 3 clicks to install - everything is automatic</p>
         </div>
 
@@ -301,7 +292,7 @@
             <div class="step-grid">
                 <div class="step-card">
                     <div class="step-number">1</div>
-                    <h4>Download & Extract</h4>
+                    <h4>Download &amp; Extract</h4>
                     <p>Download the ZIP file and extract to any folder</p>
                 </div>
                 <div class="step-card">
@@ -311,23 +302,23 @@
                 </div>
                 <div class="step-card">
                     <div class="step-number">3</div>
-                    <h4>Launch & Activate</h4>
+                    <h4>Launch &amp; Activate</h4>
                     <p>Open from Start Menu and enter your trial key</p>
                 </div>
             </div>
         </div>
 
         <div class="license-box">
-            <h3>ðŸ”‘ Your Trial License Key</h3>
+            <h3>Your Trial License Key</h3>
             <p>You'll need this key when you first launch the app:</p>
             <div class="license-key" onclick="copyLicenseKey(this)" title="Click to copy">
                 TRIAL-PREVIEW-MAY2026
             </div>
-            <p class="copy-hint">ðŸ‘† Click to copy to clipboard</p>
+            <p class="copy-hint">Click above to copy to clipboard</p>
         </div>
 
         <div class="requirements">
-            <h3>ðŸ’» System Requirements</h3>
+            <h3>System Requirements</h3>
             <ul>
                 <li>Windows 10 (version 1809 or later) or Windows 11</li>
                 <li>4 GB RAM (8 GB recommended)</li>
@@ -338,7 +329,7 @@
         </div>
 
         <div class="highlight-box" style="background: linear-gradient(135deg, #fff5f5 0%, #fee 100%); border-left-color: #dc3545;">
-            <h4 style="color: #721c24;">âš ï¸ Windows SmartScreen Warning</h4>
+            <h4 style="color: #721c24;">Windows SmartScreen Warning</h4>
             <p style="color: #721c24;">You may see "Windows protected your PC"<br>
             <strong>This is normal for trial software!</strong><br>
             Click "More info" then "Run anyway"</p>
@@ -354,7 +345,7 @@
             <a href="https://gerwulf.co/pricing">Pricing</a> | 
             <a href="mailto:info@gerwulf.co">Support</a>
         </p>
-        <p style="margin-top: 15px; font-size: 0.9em;">Â© 2026 Gerwulf LLC. All rights reserved.</p>
+        <p style="margin-top: 15px; font-size: 0.9em;">&copy; 2026 Gerwulf LLC. All rights reserved.</p>
     </footer>
 
     <script>
@@ -362,7 +353,7 @@
             const text = element.textContent.trim();
             navigator.clipboard.writeText(text).then(() => {
                 const original = element.textContent;
-                element.textContent = 'âœ… Copied!';
+                element.textContent = 'Copied!';
                 element.style.background = '#d4edda';
                 element.style.color = '#155724';
                 setTimeout(() => {
@@ -375,4 +366,3 @@
     </script>
 </body>
 </html>
-
