@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download Spatial Separation Calculator - Trial Version</title>
+    <title>Download Spatial Separation Calculator - Trial</title>
     <style>
         * {
             margin: 0;
@@ -38,7 +38,7 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 40px 20px;
         }
@@ -145,7 +145,7 @@
             font-style: italic;
         }
 
-        .installation-steps {
+        .simple-steps {
             margin: 50px 0;
             background: white;
             padding: 40px;
@@ -153,90 +153,79 @@
             box-shadow: 0 2px 15px rgba(0,0,0,0.05);
         }
 
-        .installation-steps h3 {
+        .simple-steps h3 {
             color: #525252;
             margin-bottom: 30px;
             font-size: 2em;
+            text-align: center;
         }
 
-        .steps {
-            counter-reset: step-counter;
-            list-style: none;
+        .step-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
         }
 
-        .steps li {
-            counter-increment: step-counter;
-            padding: 20px 20px 20px 70px;
-            margin-bottom: 20px;
+        .step-card {
+            text-align: center;
+            padding: 30px 20px;
             background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-            border-radius: 10px;
-            position: relative;
-            border-left: 4px solid #D3D3D3;
+            border-radius: 12px;
+            border: 2px solid #e9ecef;
             transition: all 0.3s ease;
         }
 
-        .steps li:hover {
-            border-left-color: #d67105;
-            transform: translateX(5px);
+        .step-card:hover {
+            border-color: #d67105;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(214, 113, 5, 0.15);
         }
 
-        .steps li::before {
-            content: counter(step-counter);
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
+        .step-number {
             background: linear-gradient(135deg, #d67105 0%, #ff8c1a 100%);
             color: white;
-            width: 40px;
-            height: 40px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 2em;
             font-weight: bold;
+            margin: 0 auto 20px;
+            box-shadow: 0 4px 15px rgba(214, 113, 5, 0.3);
+        }
+
+        .step-card h4 {
+            color: #525252;
+            margin-bottom: 10px;
             font-size: 1.2em;
-            box-shadow: 0 2px 10px rgba(214, 113, 5, 0.3);
         }
 
-        .warning-box {
-            background: linear-gradient(135deg, #fff5f5 0%, #fee 100%);
-            border-left: 6px solid #dc3545;
-            padding: 30px;
-            margin: 40px 0;
-            border-radius: 8px;
-            box-shadow: 0 2px 15px rgba(220, 53, 69, 0.1);
+        .step-card p {
+            color: #666;
+            font-size: 0.95em;
         }
 
-        .warning-box h4 {
-            color: #721c24;
-            margin-bottom: 15px;
-            font-size: 1.4em;
-        }
-
-        .warning-box p {
-            color: #721c24;
-            margin-bottom: 12px;
-        }
-
-        .info-box {
+        .highlight-box {
             background: linear-gradient(135deg, #e7f3ff 0%, #f0f8ff 100%);
             border-left: 6px solid #0066cc;
             padding: 30px;
             margin: 40px 0;
             border-radius: 8px;
-            box-shadow: 0 2px 15px rgba(0, 102, 204, 0.1);
+            text-align: center;
         }
 
-        .info-box h4 {
+        .highlight-box h4 {
             color: #004080;
             margin-bottom: 15px;
-            font-size: 1.4em;
+            font-size: 1.6em;
         }
 
-        .info-box p {
+        .highlight-box p {
             color: #004080;
-            margin-bottom: 12px;
+            font-size: 1.1em;
         }
 
         .requirements {
@@ -278,6 +267,10 @@
         footer a:hover {
             text-decoration: underline;
         }
+
+        .emoji {
+            font-size: 1.3em;
+        }
     </style>
 </head>
 <body>
@@ -292,10 +285,36 @@
         </div>
 
         <div class="download-section">
-            <h2>Download Trial Package</h2>
-            <p style="font-size: 1.1em; margin-bottom: 30px;">Get the complete installation package with automatic setup</p>
-            <a href="downloads/GerwulfCalculator-v1.0.0-Trial.zip" class="download-btn">Download Trial Package</a>
-            <p class="file-info">Version 1.0.0 • Windows 10/11 • ~50 MB</p>
+            <h2>Download Trial Installer</h2>
+            <p style="font-size: 1.1em; margin-bottom: 30px;">One simple download - automatic installation</p>
+            <a href="downloads/GerwulfCalculator-v1.0.0-Trial.zip" class="download-btn">Download Now</a>
+            <p class="file-info">Version 1.0.0 • Windows 10/11 • ~47 MB</p>
+        </div>
+
+        <div class="highlight-box">
+            <h4><span class="emoji">✨</span> Super Simple Installation!</h4>
+            <p>Just 3 clicks to install - everything is automatic</p>
+        </div>
+
+        <div class="simple-steps">
+            <h3>Installation in 3 Easy Steps</h3>
+            <div class="step-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h4>Download & Extract</h4>
+                    <p>Download the ZIP file and extract to any folder</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h4>Run Installer</h4>
+                    <p>Right-click <strong>InstallSpatialSeparationCalculator.bat</strong><br>Select "Run as Administrator"</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h4>Launch & Activate</h4>
+                    <p>Open from Start Menu and enter your trial key</p>
+                </div>
+            </div>
         </div>
 
         <div class="license-box">
@@ -307,49 +326,6 @@
             <p class="copy-hint">👆 Click to copy to clipboard</p>
         </div>
 
-        <div class="installation-steps">
-            <h3>📦 Easy Installation (Recommended)</h3>
-            <ol class="steps">
-                <li><strong>Download & Extract:</strong> Save the trial package and extract all files to a folder</li>
-                <li><strong>Right-Click the Script:</strong> Find <code>Install-Certificate-And-App.ps1</code></li>
-                <li><strong>Run as Administrator:</strong> Select "Run with PowerShell" or "Run as Administrator"</li>
-                <li><strong>Follow Prompts:</strong> The script will install everything automatically</li>
-                <li><strong>Launch & Activate:</strong> Open "Spatial Separation Calculator" from Start Menu and enter your trial key</li>
-            </ol>
-        </div>
-
-        <div class="info-box">
-            <h4>💡 What's in the Package?</h4>
-            <p>The download includes everything you need:</p>
-            <ul style="margin-left: 25px; margin-top: 10px;">
-                <li><strong>The App:</strong> GerwulfCalculator-v1.0.0.msix</li>
-                <li><strong>Security Certificate:</strong> GerwulfCodeSigning.cer</li>
-                <li><strong>Auto-Install Script:</strong> Install-Certificate-And-App.ps1</li>
-                <li><strong>User Guide:</strong> INSTALLATION_GUIDE_FOR_USERS.md</li>
-            </ul>
-        </div>
-
-        <div class="warning-box">
-            <h4>⚠️ Windows SmartScreen Warning</h4>
-            <p>You may see: <strong>"Windows protected your PC"</strong></p>
-            <p><strong>This is normal for trial software!</strong> Here's what to do:</p>
-            <ol style="margin-left: 25px; margin-top: 10px;">
-                <li>Click <strong>"More info"</strong></li>
-                <li>Click <strong>"Run anyway"</strong> or <strong>"Install anyway"</strong></li>
-            </ol>
-            <p style="margin-top: 15px;">Our trial uses a self-signed certificate. When we launch officially, we'll use a trusted certificate that eliminates this warning.</p>
-        </div>
-
-        <div class="installation-steps">
-            <h3>🔧 Manual Installation (If Auto-Install Fails)</h3>
-            <ol class="steps">
-                <li><strong>Install Certificate:</strong> Right-click <code>GerwulfCodeSigning.cer</code> → Install Certificate → Local Machine → Trusted People</li>
-                <li><strong>Install App:</strong> Double-click <code>GerwulfCalculator-v1.0.0.msix</code> → Click Install</li>
-                <li><strong>Launch:</strong> Find "Spatial Separation Calculator" in Start Menu</li>
-                <li><strong>Activate:</strong> Enter license key: <code>TRIAL-PREVIEW-MAY2026</code></li>
-            </ol>
-        </div>
-
         <div class="requirements">
             <h3>💻 System Requirements</h3>
             <ul>
@@ -357,21 +333,15 @@
                 <li>4 GB RAM (8 GB recommended)</li>
                 <li>500 MB available disk space</li>
                 <li>Internet connection for license activation</li>
-                <li>Administrator privileges for installation</li>
+                <li><strong>Administrator privileges for installation</strong></li>
             </ul>
         </div>
 
-        <div class="info-box">
-            <h4>❓ Need Help?</h4>
-            <p><strong>PowerShell Execution Policy Error?</strong></p>
-            <p>Run this in PowerShell as Administrator, then try again:</p>
-            <pre style="background: white; padding: 15px; border-radius: 5px; margin-top: 10px; overflow-x: auto;"><code>Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser</code></pre>
-            <p style="margin-top: 15px;"><strong>Still having trouble?</strong></p>
-            <p>Check the <code>INSTALLATION_GUIDE_FOR_USERS.md</code> in your download, or contact us:</p>
-            <ul style="margin-left: 25px; margin-top: 10px;">
-                <li>📧 Email: <a href="mailto:info@gerwulf.co">info@gerwulf.co</a></li>
-                <li>🌐 Website: <a href="https://gerwulf.co">https://gerwulf.co</a></li>
-            </ul>
+        <div class="highlight-box" style="background: linear-gradient(135deg, #fff5f5 0%, #fee 100%); border-left-color: #dc3545;">
+            <h4 style="color: #721c24;">⚠️ Windows SmartScreen Warning</h4>
+            <p style="color: #721c24;">You may see "Windows protected your PC"<br>
+            <strong>This is normal for trial software!</strong><br>
+            Click "More info" then "Run anyway"</p>
         </div>
 
     </div>
