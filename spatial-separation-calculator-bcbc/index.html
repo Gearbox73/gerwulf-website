@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCBC Spatial Separation Calculator - Online Tool | Gerwulf Systems</title>
+    <meta name="description" content="British Columbia Building Code spatial separation calculator for building code compliance. Part 9 building classification, unprotected openings, and spatial calculations.">
+    <meta name="keywords" content="BCBC, British Columbia Building Code, spatial separation, calculator, building code, Part 9, unprotected openings">
+
+    <!-- Add your existing website CSS here -->
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/calculator.css">
+</head>
+<body>
+    <!-- Add your existing website header/navigation here -->
+    <header>
+        <nav>
+            <!-- Your existing navigation -->
+        </nav>
+    </header>
+
+    <!-- License Gate Modal (shown until user validates) -->
+    <div id="licenseGate" class="license-overlay">
+        <div class="license-modal">
+            <div class="logo-section">
+                <img src="images/gerwulf-logo.png" alt="Gerwulf Systems" style="max-width: 200px;">
+            </div>
+
+            <h1>BCBC Spatial Separation Calculator</h1>
+            <p class="subtitle">British Columbia Building Code Compliance Tool - Professional Edition</p>
+
+            <div id="licenseError" class="alert alert-danger" style="display: none;"></div>
+
+            <div class="license-form">
+                <div class="form-group">
+                    <label for="licenseKeyInput">License Key</label>
+                    <input type="text" 
+                           id="licenseKeyInput" 
+                           class="form-control" 
+                           placeholder="Enter your license key"
+                           autocomplete="off">
+                    <small class="form-text">Enter the license key you received after purchase</small>
+                </div>
+
+                <button id="validateLicenseBtn" class="btn btn-primary btn-lg" onclick="validateLicense()">
+                    <span id="validateBtnText">Access Calculator</span>
+                    <span id="validateBtnSpinner" class="spinner" style="display: none;">⏳</span>
+                </button>
+
+                <div class="license-info">
+                    <p><strong>Don't have a license?</strong></p>
+                    <a href="/pricing" class="btn btn-secondary">View Pricing & Purchase</a>
+                    <br><br>
+                    <a href="mailto:support@gerwulf.co" class="help-link">Need help? Contact support</a>
+                </div>
+
+                <div class="download-option">
+                    <p><strong>Prefer a desktop app?</strong></p>
+                    <a href="/download" class="btn btn-outline">Download for Windows/Mac</a>
+                    <small class="form-text">Same license works for both web and desktop versions</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="calculatorContainer" style="display: none;">
+        <div class="calculator-header">
+            <div class="container">
+                <h1>BCBC Spatial Separation Calculator</h1>
+                <div class="license-status">
+                    <span class="status-badge status-active">Licensed</span>
+                    <span id="userLicenseInfo"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Calculator iframe loads the actual calculator -->
+            <iframe id="calculatorFrame" 
+                    src="/spatial-separation-calculator-bcbc/calculator-app.html" 
+                    style="width: 100%; height: calc(100vh - 200px); border: none; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+            </iframe>
+        </div>
+    </div>
+
+    <!-- Add your existing website footer here -->
+    <footer>
+        <!-- Your existing footer -->
+    </footer>
+
+    <!-- Calculator License Management Script -->
+    <script>
+        // Configuration - UPDATE THESE WITH YOUR ACTUAL URLS
+        const API_BASE_URL = 'https://spatial-separation-calculator-hagnbnewfbdnh5bq.canadacentral-01.azurewebsites.net'; // Your Azure API URL
+
+        // Session management
+        let sessionId = generateSessionId();
+        let heartbeatInterval = null;
+        let licenseData = null;
+
+        // Check for stored session on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const storedSession = sessionStorage.getItem('calculator_session');
+            if (storedSession) {
+                try {
+                    const session = JSON.parse(storedSession);
+                    if (session.expiresAt > Date.now()) {
+                        // Session still valid
+                        sessionId = session.sessionId;
+                        licenseData = session.licenseData;
+                        showCalculator();
+                        startHeartbeat();
+                    } else {
+                        sessionStorage.removeItem('calculator_session');
+                    }
+                } catch (e) {
+                    sessionStorage.removeItem('calculator_session');
+                }
+            }
+        });
+
+        async function validateLicense() {
+            const licenseKey = document.getElementById('licenseKeyInput').value.trim();
+            const errorDiv = document.getElementById('licenseError');
+            const btnText = document.getElementById('validateBtnText');
+            const btnSpinner = document.getElementById('validateBtnSpinner');
+            const btn = document.getElementById('validateLicenseBtn');
+
+            if (!licenseKey) {
+                showError('Please enter your license key');
+                return;
+            }
+
+            // Show loading state
+            btn.disabled = true;
+            btnText.style.display = 'none';
+            btnSpinner.style.display = 'inline';
+            errorDiv.style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/license/validate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        LicenseKey: licenseKey,
+                        SessionId: sessionId,
+                        DeviceInfo: `Web Browser - ${navigator.userAgent}`
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.valid) {
+                    // License valid - store session and show calculator
+                    licenseData = result;
+
+                    const session = {
+                        sessionId: sessionId,
+                        licenseData: result,
+                        expiresAt: Date.now() + (4 * 60 * 60 * 1000) // 4 hours
+                    };
+                    sessionStorage.setItem('calculator_session', JSON.stringify(session));
+
+                    showCalculator();
+                    startHeartbeat();
+                } else {
+                    showError(result.message || 'Invalid license key. Please check and try again.');
+                    btn.disabled = false;
+                    btnText.style.display = 'inline';
+                    btnSpinner.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('License validation error:', error);
+                showError('Unable to validate license. Please check your internet connection and try again.');
+                btn.disabled = false;
+                btnText.style.display = 'inline';
+                btnSpinner.style.display = 'none';
+            }
+        }
+
+        function showCalculator() {
+            document.getElementById('licenseGate').style.display = 'none';
+            document.getElementById('calculatorContainer').style.display = 'block';
+
+            // Display license info
+            if (licenseData) {
+                const infoEl = document.getElementById('userLicenseInfo');
+                const tierName = licenseData.tier || 'Standard';
+                const seats = licenseData.maxSeats ? `${licenseData.currentSeats}/${licenseData.maxSeats} seats in use` : '';
+                infoEl.textContent = `${tierName} ${seats}`;
+            }
+
+            // Pass session info to calculator iframe
+            const iframe = document.getElementById('calculatorFrame');
+            iframe.onload = () => {
+                iframe.contentWindow.postMessage({
+                    type: 'session',
+                    sessionId: sessionId,
+                    apiBaseUrl: API_BASE_URL
+                }, '*');
+            };
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('licenseError');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function startHeartbeat() {
+            // Send heartbeat every 30 seconds to keep session alive
+            heartbeatInterval = setInterval(async () => {
+                try {
+                    await fetch(`${API_BASE_URL}/api/license/heartbeat`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            SessionId: sessionId
+                        })
+                    });
+                } catch (error) {
+                    console.error('Heartbeat failed:', error);
+                }
+            }, 30000);
+        }
+
+        async function releaseSession() {
+            if (heartbeatInterval) {
+                clearInterval(heartbeatInterval);
+            }
+
+            try {
+                await fetch(`${API_BASE_URL}/api/license/release`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        SessionId: sessionId
+                    })
+                });
+            } catch (error) {
+                console.error('Failed to release session:', error);
+            }
+
+            sessionStorage.removeItem('calculator_session');
+        }
+
+        function generateSessionId() {
+            return 'web_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Release session when user closes tab/window
+        window.addEventListener('beforeunload', () => {
+            releaseSession();
+        });
+
+        // Allow Enter key to submit license
+        document.getElementById('licenseKeyInput')?.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                validateLicense();
+            }
+        });
+    </script>
+</body>
+</html>
+

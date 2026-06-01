@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BCBC Spatial Separation & Unprotected Opening Calculator</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/combined-styles.css">
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="combined-container">
+        <!-- Page Header -->
+        <header class="page-header">
+            <h1>Spatial Separation & Unprotected Opening Calculator</h1>
+        </header>
+
+        <!-- Three-Column Grid -->
+        <div class="three-column-grid">
+
+            <!-- ============================================
+                 LEFT COLUMN: Project Information (2 Tabs)
+                 ============================================ -->
+            <div class="column column-left">
+                <!-- Tab Headers -->
+                <div class="tab-headers">
+                    <button class="tab-header active" data-tab="project-info">
+                        Project Information
+                    </button>
+                    <button class="tab-header" data-tab="project-manager">
+                        Project Manager
+                    </button>
+                </div>
+
+                <!-- Tab Content Container -->
+                <div class="tab-content-container">
+                    <!-- Tab 1: Project Information -->
+                    <div id="project-info" class="tab-content active">
+                        <h2>PROJECT INFORMATION</h2>
+                        <div class="form-group">
+                            <label>Project Name</label>
+                            <input type="text" id="projName" placeholder="Enter project name">
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" id="projLocation" placeholder="Project address or location">
+                        </div>
+                        <div class="form-group">
+                            <label>Client Name</label>
+                            <input type="text" id="projClient" placeholder="Client or company name">
+                        </div>
+                        <div class="form-group">
+                            <label>Designer Name</label>
+                            <input type="text" id="projUser" placeholder="Your name">
+                        </div>
+                        <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" id="projDate">
+                        </div>
+                        <div class="button-row">
+                            <button class="btn btn-green" id="saveCurrentProjectBtn">
+                                Save Current Project
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Project Manager -->
+                    <div id="project-manager" class="tab-content">
+                        <h2>PROJECT MANAGER</h2>
+                        <div class="project-list-container">
+                            <div id="savedProjectList" class="project-list">
+                                <p class="placeholder">[No saved projects]</p>
+                            </div>
+                        </div>
+                        <div class="button-row button-row-three">
+                            <button class="btn btn-green" id="saveProjectBtn">
+                                Save Current Project
+                            </button>
+                            <button class="btn btn-blue" id="importProjectBtn">
+                                Import Project
+                            </button>
+                            <button class="btn btn-red" id="clearProjectBtn">
+                                Clear Projects
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================
+                 MIDDLE COLUMN: Building Class & Inputs (3 Tabs)
+                 ============================================ -->
+            <div class="column column-middle">
+                <!-- Tab Headers -->
+                <div class="tab-headers">
+                    <button class="tab-header active" data-tab="building-class">
+                        Building Classification
+                    </button>
+                    <button class="tab-header" data-tab="unprotected-openings">
+                        Unprotected Openings
+                    </button>
+                    <button class="tab-header" data-tab="spatial-calc">
+                        Spatial Calculator
+                    </button>
+                </div>
+
+                <!-- Tab Content Container -->
+                <div class="tab-content-container">
+                    <!-- Tab 1: Building Classification -->
+                    <div id="building-class" class="tab-content active">
+                        <h2>BUILDING CLASSIFICATION</h2>
+                        <div class="form-group">
+                            <label class="form-label-bold">Part 9 Building Classification:</label>
+                            <select id="tableSelect" class="form-select">
+                                <option value="Opt1">Group C Residential (Houses & Non-Stacked Residential) Table 9.10.15.4</option>
+                                <option value="Opt2">Group C Residential Table 9.10.14.4</option>
+                                <option value="Opt3">Group C Residential Detached Garage (Serving One Dwelling Only) Table 9.10.14.4</option>
+                                <option value="Opt4">Group D Business & Personal Services Table 9.10.14.4</option>
+                                <option value="Opt5">Group E Mercantile Table 9.10.14.4</option>
+                                <option value="Opt6">Group F2 Medium Hazard Industrial Table 9.10.14.4</option>
+                                <option value="Opt7">Group F3 Low Hazard Industrial Table 9.10.14.4</option>
+                            </select>
+                            <p class="helper-text">
+                                Selecting Table 1 sets the project Opening Class to <strong>Glazed Opening</strong>.
+                                Selecting any other table sets the project Opening Class to <strong>Unprotected Opening</strong>.
+                            </p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label-bold">Fire Response Time:</label>
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" name="fireResponse" id="fireRespNormal" value="10min" checked>
+                                    10 min or Less
+                                </label>
+                                <label>
+                                    <input type="radio" name="fireResponse" id="fireRespHigh" value="gt10min">
+                                    Greater Than 10 min
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label-bold">Sprinkler System:</label>
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" name="sprinkMode" id="sprinkNo" value="no" checked>
+                                    Non-sprinklered
+                                </label>
+                                <label>
+                                    <input type="radio" name="sprinkMode" id="sprinkYes" value="yes">
+                                    Sprinklered
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label-bold">Calculation Method:</label>
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" name="calcMethod" id="calcInterpolation" value="interpolation" checked>
+                                    Interpolation Method
+                                </label>
+                                <label>
+                                    <input type="radio" name="calcMethod" id="calcTabular" value="tabular">
+                                    Tabular Method
+                                </label>
+                            </div>
+                            <div id="interpolationDisclaimer" style="margin-top:10px; padding:10px; background-color:#fff3cd; border-left:4px solid #ffc107; border-radius:4px; display:block;">
+                                <p style="margin:0; font-size:14px; color:#856404;">⚠️ Confirm with your AHJ that the Interpolation Method for spatial separation calculations is acceptable in your area.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="openAirStoreysGroup" style="display:none;">
+                            <label class="form-label-bold">Are all storeys open-air?</label>
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" name="openAirStoreys" id="openAirYes" value="yes" checked>
+                                    Yes
+                                </label>
+                                <label>
+                                    <input type="radio" name="openAirStoreys" id="openAirNo" value="no">
+                                    No
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Unprotected Openings Input -->
+                    <div id="unprotected-openings" class="tab-content">
+                        <h2>UNPROTECTED OPENINGS INPUT</h2>
+                        <div class="form-group">
+                            <label class="form-label-bold">Wall Face Name</label>
+                            <input type="text" id="wallFaceName" placeholder="e.g. North Elevation">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label-bold">Opening Type:</label>
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" name="openingType" id="openingWindow" value="window" checked>
+                                    Window
+                                </label>
+                                <label>
+                                    <input type="radio" name="openingType" id="openingDoor" value="door">
+                                    Door
+                                </label>
+                                <label>
+                                    <input type="radio" name="openingType" id="openingGlassBlock" value="glassblock">
+                                    <span id="glassBlockLabel">Glass Block</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label-bold">Enter Opening Size As:</label>
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" name="sizeMode" id="openingRough" value="rough" checked>
+                                    Rough Opening Size
+                                </label>
+                                <label>
+                                    <input type="radio" name="sizeMode" id="openingActual" value="actual">
+                                    Actual Opening Size (Unit Size)
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label id="widthLabel" class="form-label-bold">Width of Opening</label>
+                            <div class="dual-unit-input">
+                                <div class="unit-input">
+                                    <input type="number" id="openingWidth_m" placeholder="0.00" step="0.01">
+                                    <span class="unit-label">m</span>
+                                </div>
+                                <div class="unit-input">
+                                    <input type="text" id="openingWidth_ft" placeholder="0'-0&quot;">
+                                    <span class="unit-label">ft</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label id="heightLabel" class="form-label-bold">Height of Opening</label>
+                            <div class="dual-unit-input">
+                                <div class="unit-input">
+                                    <input type="number" id="openingHeight_m" placeholder="0.00" step="0.01">
+                                    <span class="unit-label">m</span>
+                                </div>
+                                <div class="unit-input">
+                                    <input type="text" id="openingHeight_ft" placeholder="0'-0&quot;">
+                                    <span class="unit-label">ft</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label id="areaLabel" class="form-label-bold">Area of Opening</label>
+                            <div class="dual-unit-input">
+                                <div class="unit-input">
+                                    <input type="number" id="openingArea_m2" placeholder="0" step="0.01">
+                                    <span class="unit-label">m²</span>
+                                </div>
+                                <div class="unit-input">
+                                    <input type="number" id="openingArea_ft2" placeholder="0" step="0.01">
+                                    <span class="unit-label">ft²</span>
+                                </div>
+                            </div>
+                            <p class="helper-text">
+                                If you enter area directly (Rough), width/height fields will show N/A placeholder and area will be used as entered.
+                            </p>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label-bold">Quantity:</label>
+                            <input type="number" id="openingQuantity" placeholder="1" min="1" value="1" step="1">
+                            <p class="helper-text">
+                                Enter the number of identical openings to add (e.g., 3 windows of 3'-0" x 4'-0").
+                            </p>
+                        </div>
+
+                        <div class="button-row">
+                            <button class="btn btn-blue btn-wide" id="addOpeningToWallFaceBtn">
+                                Add Opening to Wall Face
+                            </button>
+                        </div>
+
+                        <!-- Current Wall Face Summary -->
+                        <div class="form-group" style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #ddd;">
+                            <h3 style="margin-bottom: 15px;">Current Wall Face Summary</h3>
+                            <div class="result-group" style="margin-bottom: 10px;">
+                                <label style="font-weight: bold;">Wall Face:</label>
+                                <span id="wallFaceNameDisplay" style="margin-left: 10px; color: #333;">—</span>
+                            </div>
+                            <div class="result-group" style="margin-bottom: 10px;">
+                                <label style="font-weight: bold;">Total Area of Openings:</label>
+                                <div style="margin-top: 5px;">
+                                    <span id="totalAreaFace_m2" style="display: inline-block; margin-right: 15px; color: #0066cc;">— m²</span>
+                                    <span id="totalAreaFace_ft2" style="display: inline-block; color: #0066cc;">— ft²</span>
+                                </div>
+                            </div>
+                            <div class="button-row" style="margin-top: 15px;">
+                                <button class="btn btn-blue" onclick="window.sendCurrentWallFaceToSpatial()" style="margin-right: 10px;">
+                                    📐 Send to Spatial
+                                </button>
+                                <button class="btn btn-green" id="addWallFaceBtnUnprotected">
+                                    Add Wall Face
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Spatial Calculator Input -->
+                    <div id="spatial-calc" class="tab-content">
+                        <h2>INPUT DATA</h2>
+                        <div class="form-group">
+                            <label class="form-label-bold">Wall Face Name</label>
+                            <input type="text" id="spatialWallFaceName" placeholder="e.g. North Elevation">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label-bold">Area of Exposed Building Face</label>
+                            <div class="dual-unit-input">
+                                <div class="unit-input">
+                                    <input type="number" id="areaFace_m2" placeholder="0" step="0.01">
+                                    <span class="unit-label">m²</span>
+                                </div>
+                                <div class="unit-input">
+                                    <input type="number" id="areaFace_ft2" placeholder="0" step="0.01">
+                                    <span class="unit-label">ft²</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label-bold">Limiting Distance</label>
+                            <div class="dual-unit-input">
+                                <div class="unit-input">
+                                    <input type="number" id="limitDist_m" placeholder="0" step="0.01">
+                                    <span class="unit-label">m</span>
+                                </div>
+                                <div class="unit-input">
+                                    <input type="text" id="limitDist_ft" placeholder="0'-0&quot;">
+                                    <span class="unit-label">ft</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label-bold">Area of Unprotected or Glazed Openings</label>
+                            <div class="dual-unit-input">
+                                <div class="unit-input">
+                                    <input type="number" id="openings_m2" placeholder="0" step="0.01">
+                                    <span class="unit-label">m²</span>
+                                </div>
+                                <div class="unit-input">
+                                    <input type="number" id="openings_ft2" placeholder="0" step="0.01">
+                                    <span class="unit-label">ft²</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="widthBlock" class="form-group">
+                            <label class="form-label-bold">Width of Exposing Building Face</label>
+                            <div class="dual-unit-input">
+                                <div class="unit-input">
+                                    <input type="number" id="buildingWidth_m" placeholder="0" step="0.01">
+                                    <span class="unit-label">m</span>
+                                </div>
+                                <div class="unit-input">
+                                    <input type="text" id="buildingWidth_ft" placeholder="0'-0&quot;">
+                                    <span class="unit-label">ft</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="heightBlock" class="form-group">
+                            <label class="form-label-bold">Height of Exposing Building Face</label>
+                            <div class="dual-unit-input">
+                                <div class="unit-input">
+                                    <input type="number" id="buildingHeight_m" placeholder="0" step="0.01">
+                                    <span class="unit-label">m</span>
+                                </div>
+                                <div class="unit-input">
+                                    <input type="text" id="buildingHeight_ft" placeholder="0'-0&quot;">
+                                    <span class="unit-label">ft</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label-bold">Comments / Notes</label>
+                            <textarea id="wallFaceComments" placeholder="Enter any specific notes for this wall face..." rows="3"></textarea>
+                        </div>
+
+                        <div class="button-row button-row-three">
+                            <button class="btn btn-orange" id="addWallFaceBtn">
+                                Add Wall Face
+                            </button>
+                            <button class="btn btn-orange" id="duplicateWallFaceBtn">
+                                Duplicate Wall Face
+                            </button>
+                            <button class="btn btn-blue" id="resetWallFaceBtn">
+                                Reset Form
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============================================
+                 RIGHT COLUMN: Results & Report (3 Tabs)
+                 ============================================ -->
+            <div class="column column-right">
+                <!-- Tab Headers -->
+                <div class="tab-headers">
+                    <button class="tab-header active" data-tab="aggregate-openings">
+                        Aggregate Openings
+                    </button>
+                    <button class="tab-header" data-tab="spatial-results">
+                        Spatial Results
+                    </button>
+                    <button class="tab-header" data-tab="project-report">
+                        Project Reports
+                    </button>
+                </div>
+
+                <!-- Tab Content Container -->
+                <div class="tab-content-container">
+                    <!-- Tab 1: Aggregate Openings Results -->
+                    <div id="aggregate-openings" class="tab-content active">
+                        <h2>CALCULATED RESULTS FOR CURRENT WALL FACE</h2>
+
+                        <div class="result-group">
+                            <label>Wall Face:</label>
+                            <span id="aggregateWallFaceName">—</span>
+                        </div>
+
+                        <div class="result-group">
+                            <label class="form-label-bold">Aggregate Area of Openings</label>
+                            <div class="dual-result">
+                                <span id="aggregateTotalM2">— m²</span>
+                                <span id="aggregateTotalFt2">— ft²</span>
+                            </div>
+                        </div>
+
+                        <div class="openings-list-container">
+                            <div id="currentOpeningsList" class="openings-list">
+                                <p class="placeholder">No openings added to this wall face yet.</p>
+                            </div>
+                        </div>
+
+                        <div class="button-row">
+                            <button class="btn btn-blue" id="addAnotherWallFaceBtnAggregate">
+                                Add Wall Face
+                            </button>
+                        </div>
+
+                        <h2 style="margin-top: 40px;">WALL FACES</h2>
+                        <div class="wall-faces-container">
+                            <div id="wallFacesList" class="wall-faces-list">
+                                <p class="placeholder">Enter inputs above and click 'Add Wall Face', then use the export buttons to copy or download the report.</p>
+                            </div>
+                        </div>
+
+                        <div class="button-row">
+                            <button class="btn btn-green" id="wallFaceReportBtn">
+                                Wall Face Report
+                            </button>
+                        </div>
+
+                        <h2 style="margin-top: 40px;">EXPORT REPORT</h2>
+                        <div class="button-row button-row-three">
+                            <button class="btn btn-gray" id="emailResultsUO">
+                                Copy to Clipboard
+                            </button>
+                            <button class="btn btn-orange" id="downloadPDFUO">
+                                Download PDF
+                            </button>
+                            <button class="btn btn-red" id="newProjectBtnUO">
+                                New Project
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Spatial Results -->
+                    <div id="spatial-results" class="tab-content">
+
+                        <!-- Non-Sprinkler Results Table (app.js toggles visibility) -->
+                        <div id="sprinkResultsTable" style="display:none;">
+                            <h2 id="nonSprinklerResultsHeading">CALCULATED RESULTS FOR NON-SPRINKLERED BUILDING</h2>
+
+                            <div class="results-table">
+                                <div class="result-row">
+                                    <span class="result-label" id="labelMaxAreaPermitted">Maximum Area of Unprotected Openings Permitted</span>
+                                    <span id="maxOpen_m2" class="result-value">—</span>
+                                    <span id="maxOpen_ft2" class="result-value">—</span>
+                                </div>
+                                <div class="result-row">
+                                    <span class="result-label" id="labelMaxPctAllowed">Maximum Percentage of Unprotected Openings Allowed</span>
+                                    <span id="maxPctAllowed" class="result-value">—</span>
+                                </div>
+                                <div class="result-row">
+                                    <span class="result-label" id="labelMaxIndividual">Maximum Area of Individual Unprotected Openings</span>
+                                    <span id="nsCalcMaxOpen_m2" class="result-value">—</span>
+                                    <span id="nsCalcMaxOpen_ft2" class="result-value">—</span>
+                                </div>
+                                <div class="result-row">
+                                    <span class="result-label" id="labelActualPct">Actual Percentage of Unprotected Openings</span>
+                                    <span id="actualPct_m2" class="result-value">—</span>
+                                </div>
+                                <div class="result-row">
+                                    <span class="result-label">Result (Pass/Fail)</span>
+                                    <span id="passFail" class="result-value result-pass-fail">—</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Non-Sprinkler Results -->
+                        <!-- Sprinkler Results Table (app.js toggles visibility) -->
+                        <div id="sprinkResultsTable2" style="display:none;">
+                            <h2 style="margin-top: 40px;" id="sprinklerResultsHeading">CALCULATED RESULTS FOR SPRINKLERED BUILDING</h2>
+
+                            <div class="results-table">
+                                <div class="result-row">
+                                    <span class="result-label" id="labelMaxAreaPermittedSpr">Maximum Area of Unprotected Openings Permitted</span>
+                                    <span id="maxOpenSpr_m2" class="result-value">—</span>
+                                    <span id="maxOpenSpr_ft2" class="result-value">—</span>
+                                </div>
+                                <div class="result-row">
+                                    <span class="result-label" id="labelMaxPctAllowedSpr">Maximum Percentage of Unprotected Openings Allowed</span>
+                                    <span id="maxPctAllowedSpr" class="result-value">—</span>
+                                </div>
+                                <div class="result-row">
+                                    <span class="result-label" id="labelActualPctSpr">Actual Percentage of Unprotected Openings</span>
+                                    <span id="actualPctSpr_m2" class="result-value">—</span>
+                                </div>
+                                <div class="result-row">
+                                    <span class="result-label">Sprinkler System Design Standard</span>
+                                    <span id="sprinkStandard" class="result-value">—</span>
+                                </div>
+                                <div class="result-row">
+                                    <span class="result-label">Result (Pass/Fail)</span>
+                                    <span id="passFailSpr" class="result-value result-pass-fail">—</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Sprinkler Results -->
+                        <!-- Construction Requirements Table (app.js toggles visibility) -->
+                        <div id="constructionReqTable" style="display:none;">
+                            <h2 style="margin-top: 40px;">MINIMUM CONSTRUCTION REQUIREMENTS FOR EXPOSING BUILDING FACE — TABLE 9.10.14.5.</h2>
+
+                            <div class="results-table">
+                                <div class="result-row">
+                                    <span class="result-label">Minimum Fire-Resistance Rating of Wall</span>
+                                    <span id="frr" class="result-value">—</span>
+                                </div>
+                                <div class="result-row">
+                                    <span class="result-label">Type of Construction Required</span>
+                                    <span id="conreq" class="result-value">—</span>
+                                </div>
+                                <div class="result-row">
+                                    <span class="result-label">Type of Cladding Required</span>
+                                    <span id="clad" class="result-value">—</span>
+                                </div>
+                                <div class="result-row">
+                                    <span class="result-label">Maximum Area of Exposed Building Face for Combustible Cladding</span>
+                                    <span id="maxFaceAreaCombustible" class="result-value">—</span>
+                                </div>
+                                <div id="sprinkAdjustNote" class="result-note" style="display: none;">
+                                    The construction requirements shown here have been adjusted to reflect the use of an automatic sprinkler system.
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Construction Requirements -->
+
+                        <!-- Opt1 Single Family Dwelling Cladding Note -->
+                        <div id="opt1CladdingNote" style="margin-top:20px; display:none;">
+                            <div style="background-color:#e8f4f8; border-left:4px solid #0078d4; padding:15px; border-radius:4px;">
+                                <p style="margin:0; font-weight:bold; color:#0078d4;">ℹ️ Important Note about Cladding Requirements:</p>
+                                <p id="opt1CladdingText" style="margin:10px 0 0 0; color:#333;"></p>
+                            </div>
+                        </div>
+                        <!-- End Opt1 Note -->
+
+                        <!-- Opt3 Detached Garage Exemption Note -->
+                        <div id="opt3ExemptionNote" style="margin-top:20px; display:none;">
+                            <div style="background-color:#e8f4f8; border-left:4px solid #0078d4; padding:15px; border-radius:4px;">
+                                <p style="margin:0; font-weight:bold; color:#0078d4;">ℹ️ Important Note for Detached Garages:</p>
+                                <p style="margin:10px 0 0 0; color:#333;">Complete exemption applies to exposing building face facing the dwelling unit it serves, provided the dwelling is the only major occupancy on the property.</p>
+                            </div>
+                        </div>
+                        <!-- End Opt3 Note -->
+
+                        <h2 style="margin-top: 40px;">WALL FACES</h2>
+                        <div class="wall-faces-container">
+                            <div id="wallFacesListSpatial" class="wall-faces-list">
+                                <p class="placeholder">No wall faces calculated yet. Send wall face data from Unprotected Openings, then run Spatial calculations.</p>
+                            </div>
+                        </div>
+
+                        <div class="button-row">
+                            <button class="btn btn-green" id="wallFaceReportBtnSpatial">
+                                Wall Face Report
+                            </button>
+                        </div>
+
+                        <h2 style="margin-top: 40px;">EXPORT REPORT</h2>
+                        <div class="button-row button-row-three">
+                            <button class="btn btn-gray" id="emailResults">
+                                Copy to Clipboard
+                            </button>
+                            <button class="btn btn-orange" id="downloadPDF">
+                                Download PDF
+                            </button>
+                            <button class="btn btn-red" id="newProjectBtn">
+                                New Project
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Project Reports & Export -->
+                    <div id="project-report" class="tab-content">
+                        <h2>PROJECT REPORTS</h2>
+
+                        <!-- Report Type Selection -->
+                        <div class="form-group">
+                            <label class="form-label-bold">Report Type:</label>
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" name="reportType" value="combined" id="reportTypeCombined" checked>
+                                    Combined
+                                </label>
+                                <label>
+                                    <input type="radio" name="reportType" value="unprotected" id="reportTypeUnprotected">
+                                    Unprotected Openings
+                                </label>
+                                <label>
+                                    <input type="radio" name="reportType" value="spatial" id="reportTypeSpatial">
+                                    Spatial Results
+                                </label>
+                            </div>
+                            <p class="helper-text">Select which report to view and export. Combined Report shows both calculators' data organized by wall face.</p>
+                        </div>
+
+                        <!-- Combined Report Container -->
+                        <div class="report-container" id="combinedReportContainer" style="display: block;">
+                            <div id="combinedReportContent" class="report-content">
+                                <p class="placeholder">Calculate openings and spatial separation, then the Combined Report will be generated automatically.</p>
+                            </div>
+                        </div>
+
+                        <!-- Unprotected Openings Report Container -->
+                        <div class="report-container" id="unprotectedReportContainer" style="display: none;">
+                            <div id="unprotectedReportContent" class="report-content">
+                                <p class="placeholder">Add wall faces with openings, then the Unprotected Openings Report will be generated automatically.</p>
+                            </div>
+                        </div>
+
+                        <!-- Spatial Results Report Container -->
+                        <div class="report-container" id="spatialReportContainer" style="display: none;">
+                            <!-- Target for RenderWallFacesListForReport() function (from index.html) -->
+                            <div id="projectReportContent" class="report-content">
+                                <p style="font-style:italic; color:#555;">Enter inputs above and click "Add Wall Face", then generate the report.</p>
+                            </div>
+                        </div>
+
+                        <h2 style="margin-top: 40px;">DELETED WALL FACE MANAGER</h2>
+
+                        <div class="deleted-list-container">
+                            <div id="deletedWallFaceList" class="deleted-list">
+                                <p class="placeholder">List of deleted wall faces will go here</p>
+                            </div>
+                        </div>
+
+                        <div class="button-row button-row-three">
+                            <button class="btn btn-orange" id="undoLastBtn">
+                                Undo Last Wall Face
+                            </button>
+                            <button class="btn btn-orange" id="undoAllBtn">
+                                Undo All Wall Faces
+                            </button>
+                            <button class="btn btn-blue" id="clearWallFacesBtn">
+                                Clear Wall Faces
+                            </button>
+                        </div>
+
+                        <h2 style="margin-top: 40px;">EXPORT REPORT</h2>
+                        <div class="button-row button-row-three">
+                            <button class="btn btn-gray" id="copyReportBtn">
+                                Copy to Clipboard
+                            </button>
+                            <button class="btn btn-orange" id="downloadReportPdfBtn">
+                                Download PDF
+                            </button>
+                            <button class="btn btn-red" id="newProjectBtnReport">
+                                New Project
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/web-api-client-gerwulf.js"></script>
+    <script src="/js/app.js"></script>
+    <script src="/js/UnprotectedOpeningsCalculator.js"></script>
+    <script src="/js/combined-app.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,287 @@
+/* Calculator Page Styles for gerwulf.co */
+
+/* License Gate Overlay */
+.license-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    overflow-y: auto;
+}
+
+.license-modal {
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    max-width: 600px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    margin: 20px;
+    animation: slideUp 0.4s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.logo-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.license-modal h1 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.license-modal .subtitle {
+    text-align: center;
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 30px;
+}
+
+.license-form {
+    margin-top: 30px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s;
+    box-sizing: border-box;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 2px;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-text {
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    color: #888;
+}
+
+.btn {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    width: 100%;
+}
+
+.btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-lg {
+    padding: 16px 32px;
+    font-size: 18px;
+}
+
+.btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background: #e0e0e0;
+}
+
+.btn-outline {
+    background: transparent;
+    color: #667eea;
+    border: 2px solid #667eea;
+}
+
+.btn-outline:hover {
+    background: #667eea;
+    color: white;
+}
+
+.spinner {
+    display: inline-block;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.alert {
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.alert-danger {
+    background: #fee;
+    color: #c33;
+    border: 1px solid #fcc;
+}
+
+.license-info {
+    margin-top: 30px;
+    padding-top: 30px;
+    border-top: 2px solid #f0f0f0;
+    text-align: center;
+}
+
+.license-info p {
+    margin: 10px 0;
+    color: #666;
+}
+
+.license-info .btn {
+    margin: 10px 5px;
+}
+
+.download-option {
+    margin-top: 25px;
+    padding-top: 25px;
+    border-top: 1px solid #e0e0e0;
+    text-align: center;
+}
+
+.download-option p {
+    margin: 10px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.help-link {
+    color: #667eea;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.help-link:hover {
+    text-decoration: underline;
+}
+
+/* Calculator Container */
+.calculator-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.calculator-header h1 {
+    margin: 0 0 10px 0;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.license-status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.status-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-active {
+    background: rgba(255, 255, 255, 0.25);
+    color: white;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .license-modal {
+        padding: 30px 20px;
+        margin: 10px;
+    }
+
+    .license-modal h1 {
+        font-size: 24px;
+    }
+
+    .btn-lg {
+        padding: 14px 24px;
+        font-size: 16px;
+    }
+
+    .calculator-header h1 {
+        font-size: 24px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .license-overlay,
+    .calculator-header {
+        display: none;
+    }
+}
