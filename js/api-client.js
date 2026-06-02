@@ -2,6 +2,8 @@
 const API_BASE_URL = 'https://spatial-separation-calculator-hagnbnewfbdnh5bq.canadacentral-01.azurewebsites.net';
 
 async function callSpatialApi() {
+    console.log('🚀 [API-CLIENT] callSpatialApi() invoked');
+
     // Helper to handle empty inputs
     const getNum = (id) => {
         const val = parseFloat(document.getElementById(id)?.value);
@@ -22,16 +24,22 @@ async function callSpatialApi() {
         IsOpenAirStoreys: document.getElementById('openAirYes')?.checked ?? true         // Defaults to true
     };
 
+    console.log('📦 [API-CLIENT] Request payload:', JSON.stringify(req, null, 2));
+
     if (req.FaceArea_m2 === null || req.LimitDistance_m === null) {
+        console.warn('⚠️ [API-CLIENT] Missing required fields - FaceArea or LimitDistance is null');
         return;
     }
 
     // Check if C# bridge is available (MAUI app)
     if (typeof window.sendToCSharp === 'function') {
         // MAUI: Use C# bridge
+        console.log('📱 [API-CLIENT] Using MAUI C# bridge');
         window.sendToCSharp(req);
     } else {
         // WEB: Call API directly via HTTP
+        console.log('🌐 [API-CLIENT] Using Web HTTP mode - calling Azure API');
+        console.log('🔗 [API-CLIENT] API URL:', `${API_BASE_URL}/spatial/calculate`);
         try {
             const response = await fetch(`${API_BASE_URL}/spatial/calculate`, {
                 method: 'POST',
@@ -41,19 +49,26 @@ async function callSpatialApi() {
                 body: JSON.stringify(req)
             });
 
+            console.log('📡 [API-CLIENT] Response status:', response.status);
+
             if (!response.ok) {
-                console.error('API call failed:', response.status);
+                const errorText = await response.text();
+                console.error('❌ [API-CLIENT] API call failed:', response.status, errorText);
                 return;
             }
 
             const result = await response.json();
+            console.log('✅ [API-CLIENT] API result:', JSON.stringify(result, null, 2));
 
             // Call the existing result handler from app.js
             if (typeof window.receiveFromCSharp === 'function') {
+                console.log('📥 [API-CLIENT] Passing result to receiveFromCSharp()');
                 window.receiveFromCSharp(result);
+            } else {
+                console.error('❌ [API-CLIENT] receiveFromCSharp function not found!');
             }
         } catch (error) {
-            console.error('API call error:', error);
+            console.error('💥 [API-CLIENT] API call error:', error);
         }
     }
 }

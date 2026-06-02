@@ -714,7 +714,17 @@ function initializeEventListeners() {
     // In Column 2 (Spatial Calculator): #addWallFaceBtn calls addWallFace() → callSpatialApi()
     // In Column 3 (Aggregate Openings): #addAnotherWallFaceBtn calls UnprotectedOpeningsCalculator's finalizeCurrentWallFace()
 
-    // NOTE: UnprotectedOpeningsCalculator.js already wires #addWallFaceBtn in wireRemainingButtonsAndFinishInit()
+    // Column 2 Spatial Calculator: "Add Wall Face" button
+    const addWallFaceBtnSpatial = document.getElementById('addWallFaceBtn');
+    if (addWallFaceBtnSpatial) {
+        addWallFaceBtnSpatial.addEventListener('click', () => {
+            console.log('🔵 [SPATIAL] Add Wall Face button clicked');
+            addWallFace();
+        });
+        console.log('✅ Wired #addWallFaceBtn for Spatial Calculator');
+    } else {
+        console.warn('⚠️ #addWallFaceBtn not found in DOM');
+    }
 
     // Column 3 Aggregate Openings: "Add Wall Face" button
     document.getElementById('addAnotherWallFaceBtn')?.addEventListener('click', () => {

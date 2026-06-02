@@ -885,12 +885,16 @@
             IsOpenAirStoreys: isOpenAir
         };
 
-        // E. SEND TO C# BRIDGE
+        // E. SEND TO C# BRIDGE OR HTTP API
         if (window.sendToCSharp) {
-            console.log("Outbox Sending:", req);
+            console.log("📤 Sending to C# Bridge:", req);
             window.sendToCSharp(req);
+        } else if (typeof callSpatialApi === 'function') {
+            // Web mode: Use the hybrid api-client
+            console.log("🌐 Calling HTTP API via callSpatialApi()");
+            callSpatialApi();
         } else {
-            console.error("C# Bridge NOT connected.");
+            console.error("❌ No API client available - neither C# bridge nor callSpatialApi found");
         }
 
         if (typeof SynchronizeResultsVisibility === "function") {
