@@ -52,8 +52,14 @@ async function callSpatialApi() {
             console.log('📡 [API-CLIENT] Response status:', response.status);
 
             if (!response.ok) {
-                const errorText = await response.text();
+                let errorText = '';
+                try {
+                    errorText = await response.text();
+                } catch (e) {
+                    errorText = 'Could not read error response';
+                }
                 console.error('❌ [API-CLIENT] API call failed:', response.status, errorText);
+                console.error('❌ [API-CLIENT] Request that failed:', JSON.stringify(req, null, 2));
                 return;
             }
 
