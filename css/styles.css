@@ -1,0 +1,447 @@
+﻿/* ==========================================================
+   1. BASE & GLOBAL STYLES
+   ========================================================== */
+#spatial-calculator * {
+    box-sizing: border-box;
+}
+
+#spatial-calculator {
+    font-family: Arial, sans-serif;
+    color: #222;
+}
+
+    /* ==========================================================
+   2. TYPOGRAPHY
+   ========================================================== */
+    #spatial-calculator h1 {
+        margin: 0;
+        font-size: 30px;
+        font-family: Arial, sans-serif;
+    }
+
+    #spatial-calculator h2,
+    #spatial-calculator h3 {
+        margin: 0 0 10px 0;
+        font-size: 20px;
+        font-family: Arial, sans-serif;
+    }
+
+    #spatial-calculator label {
+        font-size: 14px;
+    }
+
+    #spatial-calculator p {
+        font-size: 14px;
+        line-height: 1.6;
+        margin: 10px 0;
+        color: #333;
+    }
+
+        #spatial-calculator p.displayed-formula {
+            font-style: italic;
+            font-size: 20px;
+            margin: 10px 0 10px 150px;
+        }
+
+    /* ==========================================================
+   3. LAYOUT CONTAINERS
+   ========================================================== */
+    #spatial-calculator .section {
+        border: 1px solid #000;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+
+    #spatial-calculator .section-title,
+    #sprinkNotesHeading {
+        background-color: #1c49c4;
+        color: #fff;
+        font-weight: bold;
+        padding: 8px 10px;
+        margin: -10px -10px 15px -10px;
+        border-bottom: 1px solid #000;
+        text-align: left;
+        font-size: 16px;
+    }
+
+    #spatial-calculator .grid-4-tight {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 20px;
+        row-gap: 22px;
+        margin-bottom: 20px;
+    }
+
+    /* ==========================================================
+   4. FORMS & INPUTS
+   ========================================================== */
+    #spatial-calculator .input-with-unit {
+        display: flex;
+        width: 100%;
+    }
+
+        #spatial-calculator .input-with-unit input[type="number"],
+        #spatial-calculator .input-with-unit input[type="text"] {
+            width: 130px;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #000;
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+        }
+
+    #spatial-calculator .unit-box {
+        background-color: #1c49c4;
+        color: #fff;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 12px;
+        border: 1px solid #000;
+        border-radius: 0 4px 4px 0;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+#limitDist_ftIn {
+    margin-left: 6px;
+    font-style: italic;
+    color: #555;
+    white-space: nowrap;
+    font-size: 14px;
+}
+
+#spatial-calculator .inline-radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+}
+
+    #spatial-calculator .inline-radio input {
+        margin-right: 4px;
+    }
+
+/* ==========================================================
+   5. BUTTONS
+   ========================================================== */
+#spatial-calculator .calc-button {
+    background-color: #ff6e00;
+    color: #fff;
+    font-weight: bold;
+    padding: 16px 24px;
+    width: 250px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 8px 8px 0 0;
+}
+
+    #spatial-calculator .calc-button:hover {
+        opacity: 0.85;
+    }
+
+#spatial-calculator .new-project-btn {
+    background-color: #1c49c4 !important;
+}
+
+#spatial-calculator .export-button-row {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+    #spatial-calculator .export-button-row .calc-button {
+        flex: 1;
+        min-width: 200px;
+    }
+
+.wall-action-btn {
+    width: 80% !important;
+    min-height: 50px !important;
+    font-size: 14px !important;
+    padding: 8px 5px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+}
+
+/* ==========================================================
+   6. TABLES
+   ========================================================== */
+#spatial-calculator table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #000;
+    margin-bottom: 20px;
+}
+
+    #spatial-calculator table td,
+    #spatial-calculator table th {
+        padding: 10px 12px;
+        font-size: 16px;
+        border: none;
+        background-color: #fff;
+    }
+
+    #spatial-calculator table tr:first-child td,
+    #spatial-calculator table tr:first-child th {
+        border-bottom: 1px solid #000;
+    }
+
+    #spatial-calculator table tr:not(:first-child) td {
+        border-top: 1px solid #000;
+    }
+
+/* ==========================================================
+   7. STATE MODIFIERS
+   ========================================================== */
+.ns-disabled {
+    color: #888 !important;
+    opacity: 0.6;
+    font-style: italic;
+}
+
+.locked-control {
+    opacity: 0.8;
+    pointer-events: none;
+    cursor: not-allowed;
+    background-color: #f5f5f5 !important;
+    filter: grayscale(100%);
+}
+
+/* ==========================================================
+   8. SPRINKLER NOTES
+   ========================================================== */
+.sprinkler-notes {
+    font-size: 0.95rem;
+    line-height: 1.45;
+    margin-top: 4px;
+}
+
+    .sprinkler-notes h3 {
+        margin: 12px 0 6px 0;
+        font-size: 14px !important;
+        font-weight: 600;
+        font-family: Arial, sans-serif;
+        color: #333;
+    }
+
+    .sprinkler-notes ul {
+        margin: 0 0 10px 20px;
+        padding: 0;
+    }
+
+    .sprinkler-notes li {
+        margin-bottom: 6px;
+    }
+
+/* ==========================================================
+   9. PROJECT REPORT
+   ========================================================== */
+#projectReportSection,
+#projectReportContent {
+    font-family: inherit;
+    color: #222;
+}
+
+#projectReportContent {
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+.project-report-section {
+    margin-bottom: 12px;
+    padding: 6px 0;
+}
+
+    .project-report-section .section-heading {
+        font-weight: 600;
+        font-size: 14px;
+        margin: 0 0 8px 0;
+    }
+
+    .project-report-section .info-row {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin: 0 0 10px 0;
+        padding: 2px 0;
+    }
+
+        .project-report-section .info-row .label {
+            min-width: 150px;
+            font-weight: 600;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .project-report-section .info-row .value {
+            flex: 1;
+            color: #222;
+            word-break: break-word;
+        }
+
+.wall-face-block {
+    padding: 6px 0;
+    margin-bottom: 12px;
+}
+
+.project-report-section table,
+.project-report-section tr,
+.project-report-section td {
+    border: none !important;
+    padding: 0;
+    margin: 0;
+}
+
+.project-report-section.section-divider {
+    border-top: 1px solid rgba(0,0,0,0.06);
+    padding-top: 10px;
+    margin-top: 10px;
+}
+
+/* ==========================================================
+   10. DELETED WALL FACE MANAGER
+   ========================================================== */
+#DeletedWallFaceTable .export-button-row {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+#DeletedWallFaceTable .calc-button {
+    flex: 1;
+    min-width: 150px;
+    padding: 12px 10px;
+}
+
+#deletedWallFaceList .section-heading {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+    margin-top: 10px;
+}
+
+#deletedWallFaceList {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #b94a48;
+    padding: 10px;
+}
+
+    #deletedWallFaceList div {
+        border-bottom: 1px dashed #ccc;
+        padding: 5px 0;
+        text-transform: uppercase;
+    }
+
+/* ==========================================================
+   11. PROJECT MANAGER
+   ========================================================== */
+#ProjectManagerTable .export-button-row {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+#ProjectManagerTable .calc-button {
+    flex: 1;
+    min-width: 150px;
+    padding: 12px 10px;
+    transition: background-color 0.2s;
+}
+
+#savedProjectList {
+    font-size: 14px;
+    line-height: 1.5;
+    background-color: #fcfcfc;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    margin-top: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.project-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s;
+}
+
+    .project-row:last-child {
+        border-bottom: none;
+    }
+
+.project-info-name {
+    font-weight: bold;
+    color: #333;
+    flex-grow: 1;
+    margin-right: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.project-actions {
+    display: flex;
+    gap: 6px;
+}
+
+.project-action-btn {
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    min-width: 70px !important;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    color: white !important;
+    font-weight: 500;
+}
+
+.btn-load {
+    background-color: #007bff !important;
+}
+
+.btn-export {
+    background-color: #fd7e14 !important;
+}
+
+.btn-delete {
+    background-color: #dc3545 !important;
+}
+
+.project-action-btn:hover {
+    opacity: 0.85;
+    filter: brightness(90%);
+}
+
+/* ==========================================================
+   12. RESPONSIVE DESIGN
+   ========================================================== */
+@media (max-width: 600px) {
+    .project-report-section .info-row {
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+        .project-report-section .info-row .label {
+            min-width: 120px;
+            font-size: 12px;
+        }
+
+    #projectReportContent {
+        font-size: 12px;
+    }
+}
