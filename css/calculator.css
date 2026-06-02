@@ -218,7 +218,7 @@
 
 /* Calculator Container */
 .calculator-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #e67e22;
     color: white;
     padding: 30px 0;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -227,7 +227,8 @@
 .calculator-header h1 {
     margin: 0 0 10px 0;
     font-size: 32px;
-    font-weight: 700;
+    font-weight: 600;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .license-status {
