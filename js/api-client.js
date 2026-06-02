@@ -19,7 +19,9 @@ async function callSpatialApi() {
         Openings_m2: getNum('openings_m2'),          // Matches C# Openings_m2
         LimitDistance_m: getNum('limitDist_m'),      // Matches C# LimitDistance_m
         BuildingWidth_m: getNum('buildingWidth_m'),
-        BuildingHeight_m: getNum('buildingHeight_m')
+        BuildingHeight_m: getNum('buildingHeight_m'),
+        UseInterpolation: document.getElementById('calcInterpolation')?.checked ?? true,  // Defaults to true
+        IsOpenAirStoreys: document.getElementById('openAirYes')?.checked ?? true         // Defaults to true
     };
 
     console.log('[API-CLIENT] Request payload:', req);
