@@ -309,7 +309,7 @@ let currentProject = {
 };
 
 /**
- * Save current project via C# bridge (NO localStorage)
+ * Save current project to browser localStorage (Web Version)
  */
 window.SaveProject = function () {
     // Validate project name
@@ -362,33 +362,30 @@ window.SaveProject = function () {
         version: '1.1'
     };
 
-    // Build C# bridge payload
+    // Build project payload
     const projectData = {
-        command: "SAVE_PROJECT",
-        payload: {
-            info: currentProject.info,
-            settings: currentProject.settings,
-            metadata: currentProject.metadata,
-            wallFaces: currentProject.wallFaces,
-            spatialWalls: currentProject.spatialWalls
-        }
+        info: currentProject.info,
+        settings: currentProject.settings,
+        metadata: currentProject.metadata,
+        wallFaces: currentProject.wallFaces,
+        spatialWalls: currentProject.spatialWalls
     };
 
-    // Send to C# (saves to disk)
-    if (window.sendToCSharp) {
-        console.log('🚀 Saving Project to C#:', projectName);
-        window.sendToCSharp(projectData);
-        window.currentActiveProjectName = projectName;
+    try {
+        // WEB VERSION: Save to browser localStorage
+        const allProjects = JSON.parse(localStorage.getItem('savedProjects') || '{}');
+        allProjects[projectName] = projectData;
+        localStorage.setItem('savedProjects', JSON.stringify(allProjects));
 
-        // Update local memory cache immediately
-        window.savedProjects[projectName] = projectData.payload;
+        window.currentActiveProjectName = projectName;
+        window.savedProjects[projectName] = projectData;
         window.RenderProjectList();
 
-        // Visual feedback
-        showToast(`✅ Project "${projectName}" saved successfully!`, 'success');
-    } else {
-        console.error('❌ C# Bridge not available');
-        showToast('❌ Unable to save project', 'error');
+        console.log('✅ Project saved to browser localStorage:', projectName);
+        showToast(`✅ Project "${projectName}" saved to browser!`, 'success');
+    } catch (error) {
+        console.error('❌ Failed to save project:', error);
+        showToast('❌ Unable to save project. Storage may be full.', 'error');
     }
 };
 
@@ -460,17 +457,20 @@ window.LoadProject = function (projectName) {
 const loadProject = window.LoadProject;
 
 /**
- * Refresh the saved projects list from in-memory cache (NO localStorage)
+ * Refresh the saved projects list from browser localStorage (Web Version)
  */
 window.RenderProjectList = function () {
     const projectsList = document.getElementById('savedProjectList');
     if (!projectsList) return;
 
-    // Get projects from in-memory cache (populated by C#)
-    const projectNames = Object.keys(window.savedProjects);
+    // WEB VERSION: Load projects from localStorage
+    try {
+        const allProjects = JSON.parse(localStorage.getItem('savedProjects') || '{}');
+        window.savedProjects = allProjects;
+        const projectNames = Object.keys(allProjects);
 
-    // Clear list
-    projectsList.innerHTML = '';
+        // Clear list
+        projectsList.innerHTML = '';
 
     if (projectNames.length === 0) {
         projectsList.innerHTML = '<p class="placeholder">[No saved projects]</p>';
@@ -595,7 +595,7 @@ window.RenderProjectList = function () {
 const refreshProjectList = window.RenderProjectList;
 
 /**
- * Delete a single project via C# bridge (NO localStorage)
+ * Delete a single project from browser localStorage (Web Version)
  */
 window.DeleteProject = function (projectName) {
     if (!window.savedProjects[projectName]) {
@@ -607,19 +607,20 @@ window.DeleteProject = function (projectName) {
         return;
     }
 
-    // Send delete command to C#
-    if (window.sendToCSharp) {
-        window.sendToCSharp({
-            command: "DELETE_PROJECT",
-            payload: { name: projectName }
-        });
+    try {
+        // WEB VERSION: Delete from localStorage
+        const allProjects = JSON.parse(localStorage.getItem('savedProjects') || '{}');
+        delete allProjects[projectName];
+        localStorage.setItem('savedProjects', JSON.stringify(allProjects));
 
-        // Update local cache immediately
         delete window.savedProjects[projectName];
         window.RenderProjectList();
 
         console.log('🗑️ Project deleted:', projectName);
         showToast(`🗑️ Project "${projectName}" deleted`, 'error');
+    } catch (error) {
+        console.error('❌ Failed to delete project:', error);
+        showToast('❌ Failed to delete project', 'error');
     }
 };
 
@@ -627,25 +628,18 @@ window.DeleteProject = function (projectName) {
 const deleteProject = window.DeleteProject;
 
 /**
- * Clear all saved projects via C# bridge (NO localStorage)
+ * Clear all saved projects from browser localStorage (Web Version)
  */
 window.ClearProjects = function () {
     if (!confirm('Are you sure you want to clear all saved projects? This cannot be undone.')) {
         return;
     }
 
-    // Send clear command to C#
-    if (window.sendToCSharp) {
-        window.sendToCSharp({
-            command: "DELETE_ALL_PROJECTS",
-            payload: {}
-        });
-
-        // Wipe local cache immediately
+    try {
+        // WEB VERSION: Clear localStorage
+        localStorage.removeItem('savedProjects');
         window.savedProjects = {};
         window.currentActiveProjectName = '';
-
-        // Refresh UI
         window.RenderProjectList();
 
         console.log('🧹 All projects cleared');
