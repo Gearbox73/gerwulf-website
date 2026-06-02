@@ -1,4 +1,7 @@
-﻿async function callSpatialApi() {
+﻿// API Client - Works for both MAUI (C# bridge) and Web (HTTP)
+const API_BASE_URL = 'https://spatial-separation-calculator-hagnbnewfbdnh5bq.canadacentral-01.azurewebsites.net';
+
+async function callSpatialApi() {
     // Helper to handle empty inputs
     const getNum = (id) => {
         const val = parseFloat(document.getElementById(id)?.value);
@@ -21,10 +24,34 @@
         return;
     }
 
-    // This matches the interception logic we built in MainPage.xaml.cs
+    // Check if C# bridge is available (MAUI app)
     if (typeof window.sendToCSharp === 'function') {
+        // MAUI: Use C# bridge
         window.sendToCSharp(req);
     } else {
-        // Fallback for debugging if the bridge isn't injected yet
-        console.error("C# Bridge 'sendToCSharp' not found.");
+        // WEB: Call API directly via HTTP
+        try {
+            const response = await fetch(`${API_BASE_URL}/spatial/calculate`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(req)
+            });
+
+            if (!response.ok) {
+                console.error('API call failed:', response.status);
+                return;
+            }
+
+            const result = await response.json();
+
+            // Call the existing result handler from app.js
+            if (typeof window.receiveFromCSharp === 'function') {
+                window.receiveFromCSharp(result);
+            }
+        } catch (error) {
+            console.error('API call error:', error);
+        }
     }
+}
