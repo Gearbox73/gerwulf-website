@@ -138,19 +138,28 @@
             errorDiv.style.display = 'none';
 
             try {
+                console.log('🔐 Validating license key:', licenseKey);
+                console.log('📦 Session ID:', sessionId);
+
+                const requestBody = {
+                    LicenseKey: licenseKey,
+                    SessionId: sessionId,
+                    DeviceInfo: `Web Browser - ${navigator.userAgent}`
+                };
+                console.log('📤 Request body:', JSON.stringify(requestBody, null, 2));
+
                 const response = await fetch(`${API_BASE_URL}/api/license/validate`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({
-                        LicenseKey: licenseKey,
-                        SessionId: sessionId,
-                        DeviceInfo: `Web Browser - ${navigator.userAgent}`
-                    })
+                    body: JSON.stringify(requestBody)
                 });
 
+                console.log('📥 Response status:', response.status, response.statusText);
+
                 const result = await response.json();
+                console.log('📥 Response body:', JSON.stringify(result, null, 2));
 
                 if (response.ok && result.Valid) {
                     // License valid - store session and show calculator
