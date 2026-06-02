@@ -31,15 +31,16 @@
 /* Page Header */
 .page-header {
     padding: 20px;
-    background-color: var(--white);
+    background-color: var(--orange-primary);
     border-bottom: 2px solid var(--orange-primary);
 }
 
 .page-header h1 {
     font-size: 28px;
-    font-weight: bold;
-    color: var(--black);
+    font-weight: 600;
+    color: var(--white);
     margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Three-Column Grid Layout */
