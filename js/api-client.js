@@ -10,9 +10,19 @@ async function callSpatialApi() {
         return isNaN(val) ? null : val;
     };
 
+    // Helper to convert Table string to integer enum value
+    const getTableValue = () => {
+        const val = document.getElementById('tableSelect')?.value;
+        // Convert "Opt1" -> 0, "Opt2" -> 1, "Opt3" -> 2
+        if (val === "Opt1") return 0;
+        if (val === "Opt2") return 1;
+        if (val === "Opt3") return 2;
+        return parseInt(val) || 0; // Fallback to parsing or default to 0
+    };
+
     // Audit Fix: Property names now match C# SpatialRequest Record exactly
     const req = {
-        Table: document.getElementById('tableSelect').value,
+        Table: getTableValue(),
         IsSprinklered: document.getElementById('sprinkYes').checked,
         IsHighResp: document.getElementById('fireRespHigh').checked, // Matches C# IsHighResp
         FaceArea_m2: getNum('areaFace_m2'),          // Matches C# FaceArea_m2
