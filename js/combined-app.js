@@ -224,34 +224,13 @@ function loadProjectIntoUI(project) {
  * Initialize tab switching for all three columns
  */
 function initializeTabs() {
-    console.log('🔧 initializeTabs() called');
-
     // Get all tab headers
     const tabHeaders = document.querySelectorAll('.tab-header');
-    console.log(`📑 Found ${tabHeaders.length} tab headers to initialize`);
 
-    if (tabHeaders.length === 0) {
-        console.error('❌ No tab headers found in initializeTabs()');        
-        return;
-    }
-
-    tabHeaders.forEach((header, index) => {
-        const tabId = header.getAttribute('data-tab');
-        console.log(`  ➡️ Attaching listener to tab ${index + 1}: ${tabId}`);
-
-        // Mark that this header has a listener
-        header._hasListener = true;
-
+    tabHeaders.forEach(header => {
         header.addEventListener('click', () => {
-            console.log(`🖱️ Tab clicked: ${tabId}`);
-
             const targetTabId = header.getAttribute('data-tab');
             const column = header.closest('.column');
-
-            if (!column) {
-                console.error('❌ Could not find parent column for tab:', targetTabId);
-                return;
-            }
 
             // Deactivate all tabs in this column
             column.querySelectorAll('.tab-header').forEach(th => th.classList.remove('active'));
@@ -262,10 +241,9 @@ function initializeTabs() {
             const targetContent = column.querySelector(`#${targetTabId}`);
             if (targetContent) {
                 targetContent.classList.add('active');
-                console.log(`✅ Switched to tab: ${targetTabId}`);
-            } else {
-                console.error(`❌ Tab content not found for: ${targetTabId}`);
             }
+
+            console.log(`✅ Switched to tab: ${targetTabId}`);
 
             // AUTO-SWITCH COLUMN 3 TABS BASED ON CALCULATOR TYPE
             // When Unprotected Openings is clicked → open Aggregate Openings
@@ -736,11 +714,7 @@ function initializeEventListeners() {
     // In Column 2 (Spatial Calculator): #addWallFaceBtn calls addWallFace() → callSpatialApi()
     // In Column 3 (Aggregate Openings): #addAnotherWallFaceBtn calls UnprotectedOpeningsCalculator's finalizeCurrentWallFace()
 
-    // Column 2 Spatial Calculator: "Add Wall Face" button
-    document.getElementById('addWallFaceBtn')?.addEventListener('click', () => {
-        console.log('🔵 Add Wall Face button clicked (Spatial Calculator)');
-        addWallFace();
-    });
+    // NOTE: UnprotectedOpeningsCalculator.js already wires #addWallFaceBtn in wireRemainingButtonsAndFinishInit()
 
     // Column 3 Aggregate Openings: "Add Wall Face" button
     document.getElementById('addAnotherWallFaceBtn')?.addEventListener('click', () => {
@@ -2108,81 +2082,43 @@ function updateSpatialLinks() {
 /**
  * Initialize the Combined Calculator on page load
  */
-function initializeCalculator() {
+document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 Combined Calculator initializing...');
-    console.log('📍 Current readyState:', document.readyState);
 
-    // Check if tabs exist
-    const tabHeaders = document.querySelectorAll('.tab-header');
-    console.log(`🔍 Found ${tabHeaders.length} tab headers`);
+    // Initialize tabs
+    initializeTabs();
 
-    if (tabHeaders.length === 0) {
-        console.error('❌ No tab headers found! Waiting for DOM...');
-        return false;
+    // Initialize event listeners
+    initializeEventListeners();
+
+    // Initialize report system
+    initializeReportSystem();
+
+    // Hook into spatial calculator's wall face addition
+    hookSpatialCalculation();
+
+    // Set today's date as default
+    const todayInput = document.getElementById('projDate');
+    if (todayInput) {
+        todayInput.valueAsDate = new Date();
     }
 
-    try {
-        // Initialize tabs
-        console.log('🎯 Calling initializeTabs()...');
-        initializeTabs();
+    // NOTE: Unit conversion is handled by UnprotectedOpeningsCalculator.js and app.js
+    // No dual-unit setup needed in combined-app.js
 
-        // Initialize event listeners
-        console.log('🎯 Calling initializeEventListeners()...');
-        initializeEventListeners();
-
-        // Initialize report system
-        console.log('🎯 Calling initializeReportSystem()...');
-        initializeReportSystem();
-
-        // Hook into spatial calculator's wall face addition
-        console.log('🎯 Calling hookSpatialCalculation()...');
-        hookSpatialCalculation();
-
-        // Set today's date as default
-        const todayInput = document.getElementById('projDate');
-        if (todayInput) {
-            todayInput.valueAsDate = new Date();
-        }
-
-        // WEB VERSION: Load projects from localStorage
-        try {
-            const savedProjects = JSON.parse(localStorage.getItem('savedProjects') || '{}');
-            window.savedProjects = savedProjects;
-            console.log(`📂 Loaded ${Object.keys(savedProjects).length} projects from localStorage`);
-            window.RenderProjectList();
-        } catch (error) {
-            console.error('⚠️ Failed to load projects from localStorage:', error);
-            window.savedProjects = {};
-        }
-
-        console.log('✅ Combined Calculator ready!');
-        return true;
-
-    } catch (error) {
-        console.error('❌ Error during initialization:', error);
-        return false;
+    // Request project list from C# (will populate window.savedProjects)
+    if (typeof window.sendToCSharp === 'function') {
+        console.log('📡 Requesting Project List from C#...');
+        window.sendToCSharp({
+            command: "GET_PROJECT_LIST",
+            payload: {}
+        });
+    } else {
+        // If bridge not ready, just show empty list
+        window.RenderProjectList();
     }
-}
 
-// Try multiple initialization strategies
-if (document.readyState === 'loading') {
-    // DOM is still loading
-    console.log('⏳ DOM loading... waiting for DOMContentLoaded');
-    document.addEventListener('DOMContentLoaded', initializeCalculator);
-} else {
-    // DOM already loaded (scripts loaded after page)
-    console.log('✅ DOM already loaded, initializing immediately');
-    setTimeout(initializeCalculator, 100); // Small delay to ensure all scripts loaded
-}
-
-// Backup: Try again after full page load
-window.addEventListener('load', () => {
-    console.log('🔄 Window load event - verifying initialization');
-    const tabHeaders = document.querySelectorAll('.tab-header');
-    if (tabHeaders.length > 0 && !tabHeaders[0].onclick && !tabHeaders[0]._hasListener) {
-        console.warn('⚠️ Tabs exist but no listeners attached! Re-initializing...');
-        initializeCalculator();
-    }
+    console.log('✅ Combined Calculator ready!');
 });
 
 // ========================================
