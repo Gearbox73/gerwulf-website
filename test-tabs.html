@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tab Test</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/combined-styles.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        .test-status {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            background: #27ae60;
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .error {
+            background: #e74c3c !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-status" id="status">Loading...</div>
+
+    <h1>Tab Functionality Test</h1>
+
+    <div class="column">
+        <div class="tab-headers">
+            <button class="tab-header active" data-tab="tab1">Tab 1</button>
+            <button class="tab-header" data-tab="tab2">Tab 2</button>
+            <button class="tab-header" data-tab="tab3">Tab 3</button>
+        </div>
+
+        <div class="tab-content-container">
+            <div id="tab1" class="tab-content active">
+                <h2>Tab 1 Content</h2>
+                <p>This is tab 1. Click the tabs above to switch.</p>
+            </div>
+            <div id="tab2" class="tab-content">
+                <h2>Tab 2 Content</h2>
+                <p>This is tab 2. Tabs working!</p>
+            </div>
+            <div id="tab3" class="tab-content">
+                <h2>Tab 3 Content</h2>
+                <p>This is tab 3. Success!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load scripts in correct order -->
+    <script src="/js/api-client.js"></script>
+    <script src="/js/app.js"></script>
+    <script src="/js/UnprotectedOpeningsCalculator.js"></script>
+    <script src="/js/combined-app.js"></script>
+
+    <script>
+        // Test if initializeTabs exists and runs
+        document.addEventListener('DOMContentLoaded', () => {
+            const status = document.getElementById('status');
+
+            console.log('🧪 Testing tab functionality...');
+
+            // Check if combined-app.js loaded
+            if (typeof initializeTabs !== 'function') {
+                status.textContent = '❌ ERROR: initializeTabs not found!';
+                status.classList.add('error');
+                console.error('❌ initializeTabs function not found - combined-app.js may not have loaded');
+                return;
+            }
+
+            // Check if tabs exist
+            const tabHeaders = document.querySelectorAll('.tab-header');
+            if (tabHeaders.length === 0) {
+                status.textContent = '❌ ERROR: No tab headers found!';
+                status.classList.add('error');
+                console.error('❌ No tab headers found in DOM');
+                return;
+            }
+
+            console.log(`✅ Found ${tabHeaders.length} tab headers`);
+
+            // Try to initialize tabs
+            try {
+                initializeTabs();
+                status.textContent = '✅ Tabs Initialized!';
+                console.log('✅ initializeTabs() called successfully');
+
+                // Test clicking a tab
+                setTimeout(() => {
+                    const tab2 = document.querySelector('[data-tab="tab2"]');
+                    if (tab2) {
+                        console.log('🖱️ Simulating click on Tab 2...');
+                        tab2.click();
+
+                        // Check if it worked
+                        setTimeout(() => {
+                            const tab2Content = document.getElementById('tab2');
+                            if (tab2Content && tab2Content.classList.contains('active')) {
+                                status.textContent = '✅ Tabs Working Perfectly!';
+                                console.log('✅ Tab switching works!');
+                            } else {
+                                status.textContent = '⚠️ Tab click not working';
+                                status.classList.add('error');
+                                console.error('⚠️ Tab clicked but content did not switch');
+                            }
+                        }, 100);
+                    }
+                }, 500);
+
+            } catch (error) {
+                status.textContent = '❌ ERROR: ' + error.message;
+                status.classList.add('error');
+                console.error('❌ Error initializing tabs:', error);
+            }
+        });
+    </script>
+</body>
+</html>

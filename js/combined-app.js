@@ -224,13 +224,34 @@ function loadProjectIntoUI(project) {
  * Initialize tab switching for all three columns
  */
 function initializeTabs() {
+    console.log('🔧 initializeTabs() called');
+
     // Get all tab headers
     const tabHeaders = document.querySelectorAll('.tab-header');
+    console.log(`📑 Found ${tabHeaders.length} tab headers to initialize`);
 
-    tabHeaders.forEach(header => {
+    if (tabHeaders.length === 0) {
+        console.error('❌ No tab headers found in initializeTabs()');        
+        return;
+    }
+
+    tabHeaders.forEach((header, index) => {
+        const tabId = header.getAttribute('data-tab');
+        console.log(`  ➡️ Attaching listener to tab ${index + 1}: ${tabId}`);
+
+        // Mark that this header has a listener
+        header._hasListener = true;
+
         header.addEventListener('click', () => {
+            console.log(`🖱️ Tab clicked: ${tabId}`);
+
             const targetTabId = header.getAttribute('data-tab');
             const column = header.closest('.column');
+
+            if (!column) {
+                console.error('❌ Could not find parent column for tab:', targetTabId);
+                return;
+            }
 
             // Deactivate all tabs in this column
             column.querySelectorAll('.tab-header').forEach(th => th.classList.remove('active'));
@@ -241,9 +262,10 @@ function initializeTabs() {
             const targetContent = column.querySelector(`#${targetTabId}`);
             if (targetContent) {
                 targetContent.classList.add('active');
+                console.log(`✅ Switched to tab: ${targetTabId}`);
+            } else {
+                console.error(`❌ Tab content not found for: ${targetTabId}`);
             }
-
-            console.log(`✅ Switched to tab: ${targetTabId}`);
 
             // AUTO-SWITCH COLUMN 3 TABS BASED ON CALCULATOR TYPE
             // When Unprotected Openings is clicked → open Aggregate Openings
@@ -309,7 +331,7 @@ let currentProject = {
 };
 
 /**
- * Save current project to browser localStorage (Web Version)
+ * Save current project via C# bridge (NO localStorage)
  */
 window.SaveProject = function () {
     // Validate project name
@@ -362,30 +384,33 @@ window.SaveProject = function () {
         version: '1.1'
     };
 
-    // Build project payload
+    // Build C# bridge payload
     const projectData = {
-        info: currentProject.info,
-        settings: currentProject.settings,
-        metadata: currentProject.metadata,
-        wallFaces: currentProject.wallFaces,
-        spatialWalls: currentProject.spatialWalls
+        command: "SAVE_PROJECT",
+        payload: {
+            info: currentProject.info,
+            settings: currentProject.settings,
+            metadata: currentProject.metadata,
+            wallFaces: currentProject.wallFaces,
+            spatialWalls: currentProject.spatialWalls
+        }
     };
 
-    try {
-        // WEB VERSION: Save to browser localStorage
-        const allProjects = JSON.parse(localStorage.getItem('savedProjects') || '{}');
-        allProjects[projectName] = projectData;
-        localStorage.setItem('savedProjects', JSON.stringify(allProjects));
-
+    // Send to C# (saves to disk)
+    if (window.sendToCSharp) {
+        console.log('🚀 Saving Project to C#:', projectName);
+        window.sendToCSharp(projectData);
         window.currentActiveProjectName = projectName;
-        window.savedProjects[projectName] = projectData;
+
+        // Update local memory cache immediately
+        window.savedProjects[projectName] = projectData.payload;
         window.RenderProjectList();
 
-        console.log('✅ Project saved to browser localStorage:', projectName);
-        showToast(`✅ Project "${projectName}" saved to browser!`, 'success');
-    } catch (error) {
-        console.error('❌ Failed to save project:', error);
-        showToast('❌ Unable to save project. Storage may be full.', 'error');
+        // Visual feedback
+        showToast(`✅ Project "${projectName}" saved successfully!`, 'success');
+    } else {
+        console.error('❌ C# Bridge not available');
+        showToast('❌ Unable to save project', 'error');
     }
 };
 
@@ -457,20 +482,17 @@ window.LoadProject = function (projectName) {
 const loadProject = window.LoadProject;
 
 /**
- * Refresh the saved projects list from browser localStorage (Web Version)
+ * Refresh the saved projects list from in-memory cache (NO localStorage)
  */
 window.RenderProjectList = function () {
     const projectsList = document.getElementById('savedProjectList');
     if (!projectsList) return;
 
-    // WEB VERSION: Load projects from localStorage
-    try {
-        const allProjects = JSON.parse(localStorage.getItem('savedProjects') || '{}');
-        window.savedProjects = allProjects;
-        const projectNames = Object.keys(allProjects);
+    // Get projects from in-memory cache (populated by C#)
+    const projectNames = Object.keys(window.savedProjects);
 
-        // Clear list
-        projectsList.innerHTML = '';
+    // Clear list
+    projectsList.innerHTML = '';
 
     if (projectNames.length === 0) {
         projectsList.innerHTML = '<p class="placeholder">[No saved projects]</p>';
@@ -595,7 +617,7 @@ window.RenderProjectList = function () {
 const refreshProjectList = window.RenderProjectList;
 
 /**
- * Delete a single project from browser localStorage (Web Version)
+ * Delete a single project via C# bridge (NO localStorage)
  */
 window.DeleteProject = function (projectName) {
     if (!window.savedProjects[projectName]) {
@@ -607,20 +629,19 @@ window.DeleteProject = function (projectName) {
         return;
     }
 
-    try {
-        // WEB VERSION: Delete from localStorage
-        const allProjects = JSON.parse(localStorage.getItem('savedProjects') || '{}');
-        delete allProjects[projectName];
-        localStorage.setItem('savedProjects', JSON.stringify(allProjects));
+    // Send delete command to C#
+    if (window.sendToCSharp) {
+        window.sendToCSharp({
+            command: "DELETE_PROJECT",
+            payload: { name: projectName }
+        });
 
+        // Update local cache immediately
         delete window.savedProjects[projectName];
         window.RenderProjectList();
 
         console.log('🗑️ Project deleted:', projectName);
         showToast(`🗑️ Project "${projectName}" deleted`, 'error');
-    } catch (error) {
-        console.error('❌ Failed to delete project:', error);
-        showToast('❌ Failed to delete project', 'error');
     }
 };
 
@@ -628,18 +649,25 @@ window.DeleteProject = function (projectName) {
 const deleteProject = window.DeleteProject;
 
 /**
- * Clear all saved projects from browser localStorage (Web Version)
+ * Clear all saved projects via C# bridge (NO localStorage)
  */
 window.ClearProjects = function () {
     if (!confirm('Are you sure you want to clear all saved projects? This cannot be undone.')) {
         return;
     }
 
-    try {
-        // WEB VERSION: Clear localStorage
-        localStorage.removeItem('savedProjects');
+    // Send clear command to C#
+    if (window.sendToCSharp) {
+        window.sendToCSharp({
+            command: "DELETE_ALL_PROJECTS",
+            payload: {}
+        });
+
+        // Wipe local cache immediately
         window.savedProjects = {};
         window.currentActiveProjectName = '';
+
+        // Refresh UI
         window.RenderProjectList();
 
         console.log('🧹 All projects cleared');
@@ -2076,43 +2104,81 @@ function updateSpatialLinks() {
 /**
  * Initialize the Combined Calculator on page load
  */
-document.addEventListener('DOMContentLoaded', () => {
+function initializeCalculator() {
     console.log('🚀 Combined Calculator initializing...');
+    console.log('📍 Current readyState:', document.readyState);
 
-    // Initialize tabs
-    initializeTabs();
+    // Check if tabs exist
+    const tabHeaders = document.querySelectorAll('.tab-header');
+    console.log(`🔍 Found ${tabHeaders.length} tab headers`);
 
-    // Initialize event listeners
-    initializeEventListeners();
-
-    // Initialize report system
-    initializeReportSystem();
-
-    // Hook into spatial calculator's wall face addition
-    hookSpatialCalculation();
-
-    // Set today's date as default
-    const todayInput = document.getElementById('projDate');
-    if (todayInput) {
-        todayInput.valueAsDate = new Date();
+    if (tabHeaders.length === 0) {
+        console.error('❌ No tab headers found! Waiting for DOM...');
+        return false;
     }
 
-    // NOTE: Unit conversion is handled by UnprotectedOpeningsCalculator.js and app.js
-    // No dual-unit setup needed in combined-app.js
+    try {
+        // Initialize tabs
+        console.log('🎯 Calling initializeTabs()...');
+        initializeTabs();
 
-    // Request project list from C# (will populate window.savedProjects)
-    if (typeof window.sendToCSharp === 'function') {
-        console.log('📡 Requesting Project List from C#...');
-        window.sendToCSharp({
-            command: "GET_PROJECT_LIST",
-            payload: {}
-        });
-    } else {
-        // If bridge not ready, just show empty list
-        window.RenderProjectList();
+        // Initialize event listeners
+        console.log('🎯 Calling initializeEventListeners()...');
+        initializeEventListeners();
+
+        // Initialize report system
+        console.log('🎯 Calling initializeReportSystem()...');
+        initializeReportSystem();
+
+        // Hook into spatial calculator's wall face addition
+        console.log('🎯 Calling hookSpatialCalculation()...');
+        hookSpatialCalculation();
+
+        // Set today's date as default
+        const todayInput = document.getElementById('projDate');
+        if (todayInput) {
+            todayInput.valueAsDate = new Date();
+        }
+
+        // WEB VERSION: Load projects from localStorage
+        try {
+            const savedProjects = JSON.parse(localStorage.getItem('savedProjects') || '{}');
+            window.savedProjects = savedProjects;
+            console.log(`📂 Loaded ${Object.keys(savedProjects).length} projects from localStorage`);
+            window.RenderProjectList();
+        } catch (error) {
+            console.error('⚠️ Failed to load projects from localStorage:', error);
+            window.savedProjects = {};
+        }
+
+        console.log('✅ Combined Calculator ready!');
+        return true;
+
+    } catch (error) {
+        console.error('❌ Error during initialization:', error);
+        return false;
     }
+}
 
-    console.log('✅ Combined Calculator ready!');
+// Try multiple initialization strategies
+if (document.readyState === 'loading') {
+    // DOM is still loading
+    console.log('⏳ DOM loading... waiting for DOMContentLoaded');
+    document.addEventListener('DOMContentLoaded', initializeCalculator);
+} else {
+    // DOM already loaded (scripts loaded after page)
+    console.log('✅ DOM already loaded, initializing immediately');
+    setTimeout(initializeCalculator, 100); // Small delay to ensure all scripts loaded
+}
+
+// Backup: Try again after full page load
+window.addEventListener('load', () => {
+    console.log('🔄 Window load event - verifying initialization');
+    const tabHeaders = document.querySelectorAll('.tab-header');
+    if (tabHeaders.length > 0 && !tabHeaders[0].onclick && !tabHeaders[0]._hasListener) {
+        console.warn('⚠️ Tabs exist but no listeners attached! Re-initializing...');
+        initializeCalculator();
+    }
 });
 
 // ========================================
