@@ -161,7 +161,7 @@
                 const result = await response.json();
                 console.log('📥 Response body:', JSON.stringify(result, null, 2));
 
-                if (response.ok && result.Valid) {
+                if (response.ok && result.valid) {
                     // License valid - store session and show calculator
                     licenseData = result;
 
@@ -175,7 +175,7 @@
                     showCalculator();
                     startHeartbeat();
                 } else {
-                    showError(result.Message || 'Invalid license key. Please check and try again.');
+                    showError(result.message || 'Invalid license key. Please check and try again.');
                     btn.disabled = false;
                     btnText.style.display = 'inline';
                     btnSpinner.style.display = 'none';
@@ -196,8 +196,8 @@
             // Display license info
             if (licenseData) {
                 const infoEl = document.getElementById('userLicenseInfo');
-                const tierName = licenseData.Tier || 'Standard';
-                const seats = licenseData.MaxSeats ? `${licenseData.CurrentSeats}/${licenseData.MaxSeats} seats in use` : '';
+                const tierName = licenseData.tier || 'Standard';
+                const seats = licenseData.maxSeats ? `${licenseData.currentSeats}/${licenseData.maxSeats} seats in use` : '';
                 infoEl.textContent = `${tierName} ${seats}`;
             }
 
